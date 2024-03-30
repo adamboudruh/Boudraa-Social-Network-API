@@ -24,6 +24,7 @@ module.exports = {
 
       res.json(user);
     } catch (err) {
+      console.log(err);
       res.status(500).json(err);
     }
   },
@@ -70,7 +71,7 @@ module.exports = {
 
   async addFriend(req, res) {
     try {
-      const user = User.findOneAndUpdate(
+      const user = await User.findOneAndUpdate(
         { _id: req.params.userId },
         { $addToSet: { friends: req.params.friendId } },
         { new: true }
@@ -81,14 +82,16 @@ module.exports = {
           message: 'User not found',
         });
       }
+      res.status(200).json(user);
     } catch (err) {
+      console.log(err);
       res.status(500).json(err);
     }
   },
 
   async deleteFriend(req, res) {
     try {
-      const user = User.findOneAndUpdate(
+      const user = await User.findOneAndUpdate(
         { _id: req.params.userId },
         { $pull: { friends: req.params.friendId } },
         { new: true }
@@ -99,7 +102,9 @@ module.exports = {
           message: 'User not found',
         });
       }
+      res.status(200).json(user);
     } catch (err) {
+      console.log(err);
       res.status(500).json(err);
     }
   },

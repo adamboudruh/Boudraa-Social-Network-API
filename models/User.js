@@ -1,4 +1,5 @@
 const { Schema, model } = require('mongoose');
+const { Thought } = require('./Thought');
 
 // Schema to create User model
 const userSchema = new Schema(
@@ -16,20 +17,20 @@ const userSchema = new Schema(
       unique: true,
       validate: {
         validator: function(v) {
-          return /^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/.text(v);
+          return /^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/.test(v);
         }
       }
     },
     thoughts: [
       {
         type: Schema.Types.ObjectId,
-        ref: 'Thought',
+        ref: 'thought',
       },
     ],
     friends: [
       {
         type: Schema.Types.ObjectId,
-        ref: 'User',
+        ref: 'user',
       }
     ]
   },
@@ -42,7 +43,6 @@ const userSchema = new Schema(
   }
 );
 
-// Create a virtual property `fullName` that gets and sets the user's full name
 userSchema
   .virtual('friendCount')
   // Getter
@@ -50,7 +50,6 @@ userSchema
     return this.friends.length;
   });
 
-// Initialize our User model
 const User = model('user', userSchema);
 
 module.exports = User;

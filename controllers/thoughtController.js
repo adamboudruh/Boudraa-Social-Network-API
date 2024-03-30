@@ -13,14 +13,13 @@ module.exports = {
 
   async getSingleThought(req, res) {
     try {
-      const thought = await Thought.findOne({ _id: req.params.userId })
+      const thought = await Thought.findOne({ _id: req.params.thoughtId })
         .select('-__v')
         .populate('reactions');
 
       if (!thought) {
         return res.status(404).json({ message: 'No thought with that ID' });
       }
-
       res.json(thought);
     } catch (err) {
       res.status(500).json(err);
@@ -65,17 +64,16 @@ module.exports = {
         const result = await Thought.findOneAndUpdate(
             { _id: req.params.thoughtId }, 
             { 
-            thoughtText: req.body.thoughtText, 
-            username: req.body.username,
+            thoughtText: req.body.thoughtText
             },
             { new: true }
         );
-        if (!thought) {
+        if (!result) {
             return res.status(404).json({ message: 'No thought with that ID'});
         }
         res.status(200).json(result);
-        console.log(`Updated: ${result}`);
     } catch (err) {
+      console.log(err);
         res.status(500).json(err);
     }
   },
@@ -84,7 +82,8 @@ module.exports = {
     try {
         const reaction = await Thought.findByIdAndUpdate(
             { _id: req.params.thoughtId },
-            { $addToSet: { reactions: req.body } }
+            { $addToSet: { reactions: req.body } },
+            { new: true}
         );
         res.json(reaction);
     } catch (err) {
@@ -96,12 +95,12 @@ module.exports = {
     try {
         const reaction = await Thought.findByIdAndRemove(
             { _id: req.params.thoughtId },
-            { $pull: { reactions: req.params.reactionId } }
+            { $pull: { reactions: { _id: req.params.reactionId } } }
         );
         if (!reaction) {
             return res.status(404).json({ message: 'No thought with that ID'});
         }
-        res.json(reaction);
+        res.status(200).json({ message: 'Reaction deleted'});
     } catch (err) {
         res.status(500).json(err);
     }
