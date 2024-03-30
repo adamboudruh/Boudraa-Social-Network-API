@@ -1,4 +1,6 @@
-const { Schema, Types } = require('mongoose');
+const { Schema, model, Types } = require('mongoose');
+const { reactionSchema } = require('./Reaction');
+
 
 const thoughtSchema = new Schema(
   {
@@ -14,28 +16,31 @@ const thoughtSchema = new Schema(
     username: {
       type: String,
       required: true
-    }
+    },
+    reactions: [
+      reactionSchema
+    ]
   },
   {
     toJSON: {
       getters: true,
+      virtuals: true
     },
     id: false,
   }
 );
 
-thoughtSchema.methods.getDate = function () {
-  // The 'this' keyword is used to specify the properties belonging to the particular instance
-  console.log(
-    `This department has the name ${this.name} and a total stock of ${this.totalStock}`
-  );
-};
-
 thoughtSchema
-  .virtual('friendCount')
+  .virtual('reactionCount')
   // Getter
   .get(function () {
-    return ``;
+    return this.reactions.length;
+  });
+
+thoughtSchema
+  .virtual('date')
+  .get(function () {
+    return this.createdAt.toLocaleTimeString();
   });
 
 const Thought = model('thought', thoughtSchema);
