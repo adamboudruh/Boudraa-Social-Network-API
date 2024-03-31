@@ -46,7 +46,6 @@ module.exports = {
     }
   },
 
-  // Delete a user and associated apps
   async deleteThought(req, res) {
     try {
       const thought = await Thought.findOneAndDelete({ _id: req.params.thoughtId });
@@ -54,7 +53,16 @@ module.exports = {
       if (!thought) {
         return res.status(404).json({ message: 'No thought with that ID' });
       }
+
+      const result = await User.findOneAndUpdate(
+        { username: thought.username },
+        { $pull: { thoughts: req.params.thoughtId } },
+        { new: true}
+      )
+
+      res.json(result)
     } catch (err) {
+      console.log(err);
       res.status(500).json(err);
     }
   },
@@ -93,14 +101,15 @@ module.exports = {
 
   async deleteReaction(req, res) {
     try {
-        const reaction = await Thought.findByIdAndRemove(
+        const reaction = await Thought.findOneAndUpdate(
             { _id: req.params.thoughtId },
-            { $pull: { reactions: { _id: req.params.reactionId } } }
+            { $pull: { reactions: { reactionId: req.params.reactionId } } },
+            {new: true}
         );
         if (!reaction) {
             return res.status(404).json({ message: 'No thought with that ID'});
         }
-        res.status(200).json({ message: 'Reaction deleted'});
+        res.status(200).json(reaction);
     } catch (err) {
         res.status(500).json(err);
     }
