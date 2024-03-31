@@ -17,7 +17,7 @@ This appplication is an API that allows you to create users, post thoughts as a 
 - [Questions](#questions)
 
 ## Usage
-Walkthough video: https://drive.google.com/file/d/1SMpSmW3XQdMhNV4I1VrFGCVCEdonrk1a/view 
+Walkthough video: https://drive.google.com/file/d/1PRAq8mfAi1Fq7mLY1agSaAD1PFb87sDq/view 
 
 ## License
 This project is licensed under the terms of the MIT License.
