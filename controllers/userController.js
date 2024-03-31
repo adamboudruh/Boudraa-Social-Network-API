@@ -63,7 +63,6 @@ module.exports = {
         { new: true }
       );
     res.status(200).json(result);
-    console.log(`Updated: ${result}`);
     } catch (err) {
       res.status(500).json(err);
     }
